@@ -12,7 +12,7 @@ export const createConversation = async (
         'x-api-key': process.env.NEXT_PUBLIC_TAVUS_API_KEY!,
       },
       body: JSON.stringify({
-        persona_id: 'p9a95912', // Stock Demo Persona
+        persona_id: 'p9a95912',
         conversation_name,
         conversational_context
       }),

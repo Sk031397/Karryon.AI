@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -15,18 +15,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { toast } from 'sonner';
 import { createConversation } from '@/lib';
+import { useRouter } from 'next/navigation';
 function AddNewAgentDialog() {
   const [agentName, setAgentName] = useState("");
   const [agentDescription, setAgentDescription] = useState("");
   const [agentType, setAgentType] = useState("");
   const [loading,setLoading] = useState(false);
+  const router = useRouter();
+  useEffect(() => {
+    //handleStart();
+  })
   const handleStart = async () => {
     try {
       setLoading(true);
       const conversation = await createConversation(agentName,agentDescription);
       setAgentName(conversation.conversation_name);
       setAgentDescription(conversation.conversational_context);
-      console.log('data',conversation);
+      console.log(conversation)
+      router.push(`/meeting/${conversation.conversation_url}`);
 
     }catch(e){
       toast('something went wrong',{

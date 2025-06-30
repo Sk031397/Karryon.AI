@@ -1,4 +1,4 @@
-import { AppHeader } from "./_components/AppHeader";
+import { AppHeader } from "./dashboard/_components/AppHeader"
 
 export default function DashboardLayout({children}:{children:React.ReactNode}) {
   return (
