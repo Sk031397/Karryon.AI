@@ -14,3 +14,10 @@ export type IConversation = {
   persona_id?: string | null;
   created_at?: string;
 };
+
+export type IAgents = {
+  agent_name:string;
+  agent_description:string;
+  agent_type:string;
+  agent_url:string;
+}

@@ -16,9 +16,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { toast } from 'sonner';
 import { createConversation } from '@/lib';
 import { useRouter } from 'next/navigation';
-import { createSupabaseClient } from "@/lib/client";
+import { method } from 'lodash';
 
-const client = createSupabaseClient();
 function AddNewAgentDialog() {
   const [agentName, setAgentName] = useState("");
   const [agentDescription, setAgentDescription] = useState("");
@@ -31,8 +30,9 @@ function AddNewAgentDialog() {
       const conversation = await createConversation(agentName,agentDescription);
       setAgentName(conversation.conversation_name);
       setAgentDescription(conversation.conversational_context);
-      console.log(agentType);
-      addAgent(conversation.conversation_name,agentType,conversation.conversational_context);
+      addAgent(conversation.conversation_id,agentName,
+        agentType,agentDescription,conversation.conversation_url
+      )
      // router.push(`/meeting/${conversation.conversation_url}`);
 
     }catch(e){
@@ -44,16 +44,20 @@ function AddNewAgentDialog() {
       setLoading(false);
     }
   }
-  const addAgent = async (aName:string,aType:string,aDescription:string) => {
-    try{
-      const { data } = await client.from('agents').insert
-      ({ name:aName,
-        type:aType,
-        description:aDescription,
-        created_at:Date.now()})
-    }catch(e){
-      console.error(e)
-    }
+  const addAgent = async (id:string,aName:string,aType:string,aDescription:string,agent_url:string) => {
+    await fetch('/api/create-agent',{
+      method:'POST',
+      headers:{
+        'Content-Type': 'application/json',
+      },
+      body:JSON.stringify({
+        id,
+        agent_name:aName,
+        agent_type:aType,
+        agent_description:aDescription,
+        agent_url:agent_url
+      })
+    })
   }
   return (
     <Dialog>
