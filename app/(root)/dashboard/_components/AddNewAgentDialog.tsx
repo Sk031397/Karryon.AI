@@ -17,15 +17,17 @@ import { toast } from 'sonner';
 import { createConversation } from '@/lib';
 function AddNewAgentDialog() {
   const [agentName, setAgentName] = useState("");
-  const [description, setDescription] = useState("");
-  const [loading,setLoading] = useState(false);
+  const [agentDescription, setAgentDescription] = useState("");
   const [agentType, setAgentType] = useState("");
-
+  const [loading,setLoading] = useState(false);
   const handleStart = async () => {
     try {
       setLoading(true);
-      const conversation = await createConversation();
-      console.log("data",conversation);
+      const conversation = await createConversation(agentName,agentDescription);
+      setAgentName(conversation.conversation_name);
+      setAgentDescription(conversation.conversational_context);
+      console.log('data',conversation);
+
     }catch(e){
       toast('something went wrong',{
         description: 'Check console for details'
@@ -76,8 +78,8 @@ function AddNewAgentDialog() {
             <Textarea
               id="description"
               placeholder="Brief description of this agent's purpose..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={agentDescription}
+              onChange={(e) => setAgentDescription(e.target.value)}
             />
           </div>
         </div>

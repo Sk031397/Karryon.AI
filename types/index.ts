@@ -9,7 +9,8 @@ export type IConversation = {
   conversation_name: string;
   status: ConversationStatus;
   conversation_url: string;
-  replica_id: string | null;
-  persona_id: string | null;
-  created_at: string;
+  conversational_context:string;
+  replica_id?: string | null;
+  persona_id?: string | null;
+  created_at?: string;
 };

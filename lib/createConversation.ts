@@ -1,6 +1,9 @@
 import { IConversation } from '@/types';
 
-export const createConversation = async (): Promise<IConversation> => {
+export const createConversation = async (
+    conversation_name: string,
+    conversational_context: string
+): Promise<IConversation> => {
   try {
     const response = await fetch('https://tavusapi.com/v2/conversations', {
       method: 'POST',
@@ -10,6 +13,8 @@ export const createConversation = async (): Promise<IConversation> => {
       },
       body: JSON.stringify({
         persona_id: 'p9a95912', // Stock Demo Persona
+        conversation_name,
+        conversational_context
       }),
     });
 
