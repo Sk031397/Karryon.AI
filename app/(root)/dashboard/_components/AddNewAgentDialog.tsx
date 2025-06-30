@@ -16,23 +16,24 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { toast } from 'sonner';
 import { createConversation } from '@/lib';
 import { useRouter } from 'next/navigation';
+import { createSupabaseClient } from "@/lib/client";
+
+const client = createSupabaseClient();
 function AddNewAgentDialog() {
   const [agentName, setAgentName] = useState("");
   const [agentDescription, setAgentDescription] = useState("");
   const [agentType, setAgentType] = useState("");
   const [loading,setLoading] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    //handleStart();
-  })
   const handleStart = async () => {
     try {
       setLoading(true);
       const conversation = await createConversation(agentName,agentDescription);
       setAgentName(conversation.conversation_name);
       setAgentDescription(conversation.conversational_context);
-      console.log(conversation)
-      router.push(`/meeting/${conversation.conversation_url}`);
+      console.log(agentType);
+      addAgent(conversation.conversation_name,agentType,conversation.conversational_context);
+     // router.push(`/meeting/${conversation.conversation_url}`);
 
     }catch(e){
       toast('something went wrong',{
@@ -41,6 +42,17 @@ function AddNewAgentDialog() {
       console.error(e)
     }finally{
       setLoading(false);
+    }
+  }
+  const addAgent = async (aName:string,aType:string,aDescription:string) => {
+    try{
+      const { data } = await client.from('agents').insert
+      ({ name:aName,
+        type:aType,
+        description:aDescription,
+        created_at:Date.now()})
+    }catch(e){
+      console.error(e)
     }
   }
   return (

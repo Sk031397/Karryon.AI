@@ -8,6 +8,15 @@ import { useEffect } from "react";
 
 export default function DashboardPage() {
   const user = useUser();
+  useEffect(() => {
+    AddNewUser();
+  },[user]);
+
+  const AddNewUser = async () => {
+    if(user){
+      await fetch('/api/create-user',{method:'POST'})
+    }
+  }
   return (
     <>
       <div className="flex items-center justify-between">
