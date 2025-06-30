@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { toast } from 'sonner';
+import { createConversation } from '@/lib';
 function AddNewAgentDialog() {
   const [agentName, setAgentName] = useState("");
   const [description, setDescription] = useState("");
@@ -23,8 +24,8 @@ function AddNewAgentDialog() {
   const handleStart = async () => {
     try {
       setLoading(true);
-      //const conversation = await createConversation();
-      //console.log("data",conversation);
+      const conversation = await createConversation();
+      console.log("data",conversation);
     }catch(e){
       toast('something went wrong',{
         description: 'Check console for details'
