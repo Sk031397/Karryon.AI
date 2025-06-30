@@ -1,10 +1,10 @@
 'use client';
 import { useVideoTrack, DailyVideo } from '@daily-co/daily-react';
 import { cn } from '@/lib/utils';
+import { useEffect } from 'react';
 
 export const Video = ({ id, className }: { id: string, className?: string }) => {
   const videoState = useVideoTrack(id);
-
   return (
     <DailyVideo
       automirror

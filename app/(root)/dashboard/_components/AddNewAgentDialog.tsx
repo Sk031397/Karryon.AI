@@ -1,69 +1,86 @@
-'use client'
-import { useEffect, useState } from 'react';
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
 import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogTitle,
-    DialogTrigger,
-    DialogHeader
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from '@/components/ui/label';
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+  DialogHeader
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem
+} from "@/components/ui/select";
+
 import { createConversation } from '@/lib';
-import { useRouter } from 'next/navigation';
-import { method } from 'lodash';
+import { useAgent } from '@/components/AgentContext';
 
 function AddNewAgentDialog() {
+  const { setAgent } = useAgent();
   const [agentName, setAgentName] = useState("");
   const [agentDescription, setAgentDescription] = useState("");
   const [agentType, setAgentType] = useState("");
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   const handleStart = async () => {
     try {
       setLoading(true);
-      const conversation = await createConversation(agentName,agentDescription);
-      setAgentName(conversation.conversation_name);
-      setAgentDescription(conversation.conversational_context);
-      addAgent(conversation.conversation_id,agentName,
-        agentType,agentDescription,conversation.conversation_url
-      )
-     // router.push(`/meeting/${conversation.conversation_url}`);
 
-    }catch(e){
-      toast('something went wrong',{
-        description: 'Check console for details'
-      })
-      console.error(e)
-    }finally{
+      const conversation = await createConversation(agentName, agentDescription);
+
+      const newAgent = {
+        agent_id: conversation.conversation_id,
+        agent_name: conversation.conversation_name,
+        agent_type: agentType,
+        agent_description: conversation.conversational_context,
+        agent_url: conversation.conversation_url
+      };
+
+      // Store in global context
+      setAgent(newAgent);
+
+      // Save to backend
+      await fetch('/api/create-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: newAgent.agent_id,
+          agent_name: newAgent.agent_name,
+          agent_type: newAgent.agent_type,
+          agent_description: newAgent.agent_description,
+          agent_url: newAgent.agent_url
+        })
+      });
+
+      // Redirect
+      router.push(`/meeting/${newAgent.agent_id}`);
+    } catch (error) {
+      toast('Something went wrong', { description: 'Check console for details' });
+      console.error(error);
+    } finally {
       setLoading(false);
     }
-  }
-  const addAgent = async (id:string,aName:string,aType:string,aDescription:string,agent_url:string) => {
-    await fetch('/api/create-agent',{
-      method:'POST',
-      headers:{
-        'Content-Type': 'application/json',
-      },
-      body:JSON.stringify({
-        id,
-        agent_name:aName,
-        agent_type:aType,
-        agent_description:aDescription,
-        agent_url:agent_url
-      })
-    })
-  }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className='mt-3'>+ Create New Agent</Button>
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Basic Content</DialogTitle>
@@ -107,7 +124,9 @@ function AddNewAgentDialog() {
         </div>
 
         <div className="flex justify-end">
-          <Button onClick={handleStart}>Create Agent</Button>
+          <Button onClick={handleStart} disabled={loading}>
+            {loading ? 'Creating...' : 'Create Agent'}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

@@ -16,6 +16,7 @@ export type IConversation = {
 };
 
 export type IAgents = {
+  agent_id:string;
   agent_name:string;
   agent_description:string;
   agent_type:string;
