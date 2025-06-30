@@ -21,7 +21,7 @@ export default function DashboardPage() {
     <>
       <div className="flex items-center justify-between">
         {user.isSignedIn ? (
-          <h2 className="font-bold text-2xl italic">{user.user?.fullName}'s Dashboard</h2>
+          <h2 className="font-bold text-2xl italic">{user.user?.fullName}&apos;s Dashboard</h2>
         ):(
           <h2 className="font-bold text-2xl">Dashboard</h2>
         )}
