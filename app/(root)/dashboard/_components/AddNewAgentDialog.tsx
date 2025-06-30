@@ -64,9 +64,9 @@ function AddNewAgentDialog() {
           agent_url: newAgent.agent_url
         })
       });
-
+      window.location.href = newAgent.agent_url;
       // Redirect
-      router.push(`/meeting/${newAgent.agent_id}`);
+      //router.push(`/meeting/${newAgent.agent_id}`);
     } catch (error) {
       toast('Something went wrong', { description: 'Check console for details' });
       console.error(error);

@@ -86,6 +86,7 @@ const Navbar = () => {
         />
       </div>
       <div className="flex gap-2">
+          <Image src={'/bolt.jpeg'} alt="bolt-badge" width={30} height={30}/>
           <Button onClick={() => router.push('/sign-in')}>Get Started</Button>
          <ModeToggle/>
       </div>
